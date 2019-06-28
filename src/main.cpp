@@ -1,0 +1,61 @@
+/*
+* rosserial Publisher Example
+* Prints "hello world!"
+*/
+
+#include <ros.h>
+#include <std_msgs/String.h>
+/* ESP Library */
+#include "ESP8266WiFi.h"
+
+#define ROS_MASTER_IP "192.168.3.15" /* ROS Master IP */
+#define ROS_MASTER_PORT 11411
+
+ros::NodeHandle  nh;
+
+std_msgs::String str_msg;
+ros::Publisher chatter("chatter", &str_msg);
+
+char hello[13] = "hello world!";
+
+void setup_ros() {
+  IPAddress ROSMasterAddress;
+  ROSMasterAddress.fromString(ROS_MASTER_IP);
+  nh.getHardware()->setConnection(ROSMasterAddress, ROS_MASTER_PORT);
+  nh.initNode();
+  nh.advertise(chatter);
+}
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("Starting");
+  WiFi.begin("dramas_EXT", "seraquenada");
+  int wifi_max_tries = 10000 / 100;
+  bool wifi_connected = true;
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    if (wifi_max_tries-- <= 0) {
+      wifi_connected = false;
+      break;
+    }
+  }
+  if (wifi_connected) {
+    Serial.println("Wifi Connected");
+    Serial.print("IP address:\t");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("Could not connect to WIFI");
+    exit(1);
+  }
+  setup_ros();
+
+}
+
+void loop()
+{
+  str_msg.data = hello;
+  chatter.publish( &str_msg );
+  nh.spinOnce();
+  delay(1000);
+}

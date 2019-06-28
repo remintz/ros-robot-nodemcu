@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/renato.mintz/.platformio/penv/bin:/Users/renato.mintz/.platformio/penv:/Users/renato.mintz/Documents/programs/google-cloud-sdk/bin:/Users/renato.mintz/.nvm/versions/node/v10.15.1/bin:/Users/renato.mintz/miniconda3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/renato.mintz/MyApps:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
