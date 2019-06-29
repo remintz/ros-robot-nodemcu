@@ -9,29 +9,28 @@
 
 /* ESP Library */
 #include "ESP8266WiFi.h"
+#include "ros_controller.h"
 
 #define ROS_MASTER_IP "192.168.3.17" /* ROS Master IP */
 #define ROS_MASTER_PORT 11411
 
-ros::NodeHandle  nh;
+ROSController rosControl = ROSController();
 
-std_msgs::String str_msg;
-ros::Publisher chatter("chatter", &str_msg);
-
-arduino_hello_world::hello hello_msg;
-ros::Publisher hello("hello", &hello_msg);
+std_msgs::String *str_msg = new std_msgs::String();
+arduino_hello_world::hello *hello_msg = new arduino_hello_world::hello();
 
 char hello_str[13] = "hello world!";
 char name_str[20] = "Renato";
 
+int handleChatterPublisher;
+int handleHelloPublisher;
+
 void setup_ros() {
   Serial.println("setup_ros");
-  IPAddress ROSMasterAddress;
-  ROSMasterAddress.fromString(ROS_MASTER_IP);
-  nh.getHardware()->setConnection(ROSMasterAddress, ROS_MASTER_PORT);
-  nh.initNode();
-  nh.advertise(chatter);
-  nh.advertise(hello);
+  rosControl.setMaster(ROS_MASTER_IP, ROS_MASTER_PORT);
+  handleChatterPublisher = rosControl.advertisePublisher("chatter", *&str_msg);
+  handleHelloPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
+  rosControl.start();
 }
 
 void setup()
@@ -63,16 +62,17 @@ void setup()
 void loop()
 {
   Serial.println("loop");
-  str_msg.data = hello_str;
+  str_msg->data = hello_str;
 
-  hello_msg.header.frame_id = name_str;
-  hello_msg.header.seq = 1234;
-  hello_msg.name = name_str;
-  hello_msg.age = 60;
+  hello_msg->header.frame_id = name_str;
+  hello_msg->header.seq = 1234;
+  hello_msg->name = name_str;
+  hello_msg->age = 60;
 
-  chatter.publish( &str_msg );
-  hello.publish( &hello_msg );
+  rosControl.publish(handleChatterPublisher, str_msg);
+  rosControl.publish(handleHelloPublisher, hello_msg);
+
   Serial.println("mandou");
-  nh.spinOnce();
+  rosControl.spinOnce();
   delay(1000);
 }
