@@ -17,6 +17,7 @@
 ROSController rosControl = ROSController();
 
 std_msgs::String *str_msg = new std_msgs::String();
+std_msgs::String *str_msg_rcvd = new std_msgs::String();
 arduino_hello_world::hello *hello_msg = new arduino_hello_world::hello();
 
 char hello_str[13] = "hello world!";
@@ -24,12 +25,18 @@ char name_str[20] = "Renato";
 
 int handleChatterPublisher;
 int handleHelloPublisher;
+int handleSubscriber;
+
+void inputCallback(const std_msgs::String& msg) {
+  Serial.println(msg.data);
+}
 
 void setup_ros() {
   Serial.println("setup_ros");
   rosControl.setMaster(ROS_MASTER_IP, ROS_MASTER_PORT);
   handleChatterPublisher = rosControl.advertisePublisher("chatter", *&str_msg);
   handleHelloPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
+  handleSubscriber = rosControl.subscribe("input", inputCallback);
   rosControl.start();
 }
 
