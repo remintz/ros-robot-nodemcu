@@ -29,7 +29,7 @@ void setup_ros() {
   Serial.println("setup_ros");
   rosControl.setMaster(ROS_MASTER_IP, ROS_MASTER_PORT);
   handleChatterPublisher = rosControl.advertisePublisher("chatter", *&str_msg);
-  handleChatterPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
+  handleHelloPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
   rosControl.start();
 }
 
@@ -70,7 +70,7 @@ void loop()
   hello_msg->age = 60;
 
   rosControl.publish(handleChatterPublisher, str_msg);
-  // rosControl.publish(handleHelloPublisher, hello_msg);
+  rosControl.publish(handleHelloPublisher, hello_msg);
 
   Serial.println("mandou");
   rosControl.spinOnce();

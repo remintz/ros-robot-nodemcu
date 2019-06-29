@@ -24,8 +24,7 @@ int ROSController::advertisePublisher(const char *topicName, ros::Msg *msg) {
     if (this->nPublishers > 10) {
         return -1;
     }
-    ros::Publisher *p = new ros::Publisher(topicName, msg);
-    this->publishers[this->nPublishers] = p;
+    this->publishers[this->nPublishers] = new ros::Publisher(topicName, msg);
     this->nh.advertise(*(this->publishers[this->nPublishers]));
     return this->nPublishers++;
 }
