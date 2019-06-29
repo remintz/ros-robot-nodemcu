@@ -10,7 +10,7 @@
 /* ESP Library */
 #include "ESP8266WiFi.h"
 
-#define ROS_MASTER_IP "192.168.3.15" /* ROS Master IP */
+#define ROS_MASTER_IP "192.168.3.17" /* ROS Master IP */
 #define ROS_MASTER_PORT 11411
 
 ros::NodeHandle  nh;
