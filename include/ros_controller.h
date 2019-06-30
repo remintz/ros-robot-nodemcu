@@ -12,12 +12,12 @@ class ROSController {
         void start();
         int advertisePublisher(const char *topicName, ros::Msg *msg); 
 
-        template <class A, class B>
-        int subscribe(const char *topicName, A callback) {
+        template <class A>
+        int subscribe(const char *topicName, void (&callback)(const A&) ) {
             if (this->nSubscribers > 10) {
                 return -1;
             }
-            this->subscribers[this->nSubscribers] = new ros::Subscriber<B>(topicName, callback);
+            this->subscribers[this->nSubscribers] = new ros::Subscriber<A>(topicName, callback);
             this->nh.subscribe(*(this->subscribers[this->nSubscribers]));
             return this->nSubscribers++;
         }

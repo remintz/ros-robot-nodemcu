@@ -36,7 +36,7 @@ void setup_ros() {
   rosControl.setMaster(ROS_MASTER_IP, ROS_MASTER_PORT);
   handleChatterPublisher = rosControl.advertisePublisher("chatter", *&str_msg);
   handleHelloPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
-  handleSubscriber = rosControl.subscribe<void (&)(const std_msgs::String&), std_msgs::String>("input", inputCallback);
+  handleSubscriber = rosControl.subscribe<std_msgs::String>("input", inputCallback);
   rosControl.start();
 }
 
