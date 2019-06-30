@@ -11,7 +11,17 @@ class ROSController {
         void setMaster(String ip, int port);
         void start();
         int advertisePublisher(const char *topicName, ros::Msg *msg); 
-        int subscribe(const char *topicName, ros::Subscriber<std_msgs::String>::CallbackT callback);
+
+        template <class A, class B>
+        int subscribe(const char *topicName, A callback) {
+            if (this->nSubscribers > 10) {
+                return -1;
+            }
+            this->subscribers[this->nSubscribers] = new ros::Subscriber<B>(topicName, callback);
+            this->nh.subscribe(*(this->subscribers[this->nSubscribers]));
+            return this->nSubscribers++;
+        }
+
         ros::Publisher *getPublisher(int handle);
         ros::Subscriber<ros::Msg> *getSubscriber(int handle);
         void publish(int handle, ros::Msg *msg);
