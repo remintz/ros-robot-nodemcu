@@ -3,6 +3,7 @@
 * Prints "hello world!"
 */
 
+#include "const.h"
 #include <ros.h>
 #include <std_msgs/String.h>
 #include <arduino_hello_world/hello.h>
@@ -11,9 +12,6 @@
 #include "ESP8266WiFi.h"
 #include "ros_controller.h"
 #include "dcmotor.h"
-
-#define ROS_MASTER_IP "192.168.3.17" /* ROS Master IP */
-#define ROS_MASTER_PORT 11411
 
 ROSController rosControl = ROSController();
 DCMotor dcMotor = DCMotor();
@@ -44,12 +42,11 @@ void setup_ros() {
   rosControl.start();
 }
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
   Serial.println("Starting");
-  WiFi.begin("dramas_EXT", "seraquenada");
-  int wifi_max_tries = 10000 / 100;
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  int wifi_max_tries = WIFI_TRY_TIMEOUT / 100;
   bool wifi_connected = true;
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
@@ -67,13 +64,12 @@ void setup()
     exit(1);
   }
   setup_ros();
-  dcMotor.attach(1, D1, D2, D0);
-  dcMotor.attach(2, D3, D4, D5);
-  dcMotor.setRange(1024);
+  dcMotor.attach(LEFT_MOTOR, LEFT_MOTOR_FWD, LEFT_MOTOR_BWD, LEFT_MOTOR_PWM);
+  dcMotor.attach(RIGHT_MOTOR, RIGHT_MOTOR_FWD, RIGHT_MOTOR_BWD, RIGHT_MOTOR_PWM);
+  dcMotor.setRange(PWM_RANGE);
 }
 
-void loop()
-{
+void loop() {
   Serial.println("loop");
   str_msg->data = hello_str;
 
