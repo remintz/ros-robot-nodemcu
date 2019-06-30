@@ -10,11 +10,13 @@
 /* ESP Library */
 #include "ESP8266WiFi.h"
 #include "ros_controller.h"
+#include "dcmotor.h"
 
 #define ROS_MASTER_IP "192.168.3.17" /* ROS Master IP */
 #define ROS_MASTER_PORT 11411
 
 ROSController rosControl = ROSController();
+DCMotor dcMotor = DCMotor();
 
 std_msgs::String *str_msg = new std_msgs::String();
 std_msgs::String *str_msg_rcvd = new std_msgs::String();
@@ -26,6 +28,8 @@ char name_str[20] = "Renato";
 int handleChatterPublisher;
 int handleHelloPublisher;
 int handleSubscriber;
+
+int motorMode = 0;
 
 void inputCallback(const std_msgs::String& msg) {
   Serial.println(msg.data);
@@ -63,7 +67,9 @@ void setup()
     exit(1);
   }
   setup_ros();
-
+  dcMotor.attach(1, D1, D2, D0);
+  dcMotor.attach(2, D3, D4, D5);
+  dcMotor.setRange(1024);
 }
 
 void loop()
@@ -81,5 +87,53 @@ void loop()
 
   Serial.println("mandou");
   rosControl.spinOnce();
-  delay(1000);
+
+  switch (motorMode) {
+    case 0:
+      dcMotor.command(0, 0);
+      break;
+    case 1:
+      dcMotor.command(100, 100);
+      break;
+    case 2:
+      dcMotor.command(0, 0);
+      break;
+    case 3:
+      dcMotor.command(-100, -100);
+      break;
+    case 4:
+      dcMotor.command(0, 0);
+      break;
+    case 5:
+      dcMotor.command(0, 100);
+      break;
+    case 6:
+      dcMotor.command(0, 0);
+      break;
+    case 7:
+      dcMotor.command(0, -100);
+      break;
+    case 8:
+      dcMotor.command(0, 0);
+      break;
+    case 9:
+      dcMotor.command(100, 0);
+      break;
+    case 10:
+      dcMotor.command(0, 0);
+      break;
+    case 11:
+      dcMotor.command(-100, 100);
+      break;
+    case 12:
+      dcMotor.command(0, 0);
+      break;
+    case 13:
+      dcMotor.command(100, -100);
+      break;
+  }
+  if (++motorMode > 13) {
+    motorMode = 0;
+  }
+  delay(5000);
 }
