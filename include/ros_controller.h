@@ -32,7 +32,7 @@ class ROSController {
         IPAddress masterIP;
         int masterPort;
         ros::Publisher *publishers[10];
-        ros::Subscriber<std_msgs::String> *subscribers[10];
+        ros::Subscriber_ *subscribers[10];
         int nPublishers;
         int nSubscribers;
 };
