@@ -12,9 +12,11 @@
 #include "ESP8266WiFi.h"
 #include "ros_controller.h"
 #include "dcmotor.h"
+#include "nonvolatile.h"
 
 ROSController rosControl = ROSController();
 DCMotor dcMotor = DCMotor();
+NonVolatile *storage = NonVolatile::getInstance();
 
 std_msgs::String *str_msg = new std_msgs::String();
 std_msgs::String *str_msg_rcvd = new std_msgs::String();
@@ -33,9 +35,9 @@ void inputCallback(const std_msgs::String& msg) {
   Serial.println(msg.data);
 }
 
-void setup_ros() {
+void setup_ros(char *rosMasterIP, int rosMasterPort) {
   Serial.println("setup_ros");
-  rosControl.setMaster(ROS_MASTER_IP, ROS_MASTER_PORT);
+  rosControl.setMaster(rosMasterIP, rosMasterPort);
   handleChatterPublisher = rosControl.advertisePublisher("chatter", *&str_msg);
   handleHelloPublisher = rosControl.advertisePublisher("hello", *&hello_msg);
   handleSubscriber = rosControl.subscribe<std_msgs::String>("input", inputCallback);
@@ -45,7 +47,15 @@ void setup_ros() {
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting");
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  storage->getConfigData();
+  Serial.println("Config data read");
+  bool isWifiAPMode = storage->configuration.isAPMode;
+  bool isFirstTime = storage->configuration.robotId == -1;
+
+  String wifiSSID = storage->configuration.wifiSSID;
+  String wifiPwd = storage->configuration.wifiPass;
+  Serial.println("Trying to connect to WIFI: " + wifiSSID);
+  WiFi.begin(wifiSSID, wifiPwd);
   int wifi_max_tries = WIFI_TRY_TIMEOUT / 100;
   bool wifi_connected = true;
   while (WiFi.status() != WL_CONNECTED) {
@@ -63,7 +73,7 @@ void setup() {
     Serial.println("Could not connect to WIFI");
     exit(1);
   }
-  setup_ros();
+  setup_ros(storage->configuration.rosMasterAddress, storage->configuration.rosMasterPort);
   dcMotor.attach(LEFT_MOTOR, LEFT_MOTOR_FWD, LEFT_MOTOR_BWD, LEFT_MOTOR_PWM);
   dcMotor.attach(RIGHT_MOTOR, RIGHT_MOTOR_FWD, RIGHT_MOTOR_BWD, RIGHT_MOTOR_PWM);
   dcMotor.setRange(PWM_RANGE);
