@@ -50,28 +50,32 @@ void setup() {
   storage->getConfigData();
   Serial.println("Config data read");
   bool isWifiAPMode = storage->configuration.isAPMode;
-  bool isFirstTime = storage->configuration.robotId == -1;
+  bool isFirstRun = storage->configuration.robotId == -1;
 
-  String wifiSSID = storage->configuration.wifiSSID;
-  String wifiPwd = storage->configuration.wifiPass;
-  Serial.println("Trying to connect to WIFI: " + wifiSSID);
-  WiFi.begin(wifiSSID, wifiPwd);
-  int wifi_max_tries = WIFI_TRY_TIMEOUT / 100;
-  bool wifi_connected = true;
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    if (wifi_max_tries-- <= 0) {
-      wifi_connected = false;
-      break;
-    }
-  }
-  if (wifi_connected) {
-    Serial.println("Wifi Connected");
-    Serial.print("IP address:\t");
-    Serial.println(WiFi.localIP());
+  if (isFirstRun || isWifiAPMode) {
+
   } else {
-    Serial.println("Could not connect to WIFI");
-    exit(1);
+    String wifiSSID = storage->configuration.wifiSSID;
+    String wifiPwd = storage->configuration.wifiPass;
+    Serial.println("Trying to connect to WIFI: " + wifiSSID);
+    WiFi.begin(wifiSSID, wifiPwd);
+    int wifi_max_tries = WIFI_TRY_TIMEOUT / 100;
+    bool wifi_connected = true;
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(100);
+      if (wifi_max_tries-- <= 0) {
+        wifi_connected = false;
+        break;
+      }
+    }
+    if (wifi_connected) {
+      Serial.println("Wifi Connected");
+      Serial.print("IP address:\t");
+      Serial.println(WiFi.localIP());
+    } else {
+      Serial.println("Could not connect to WIFI");
+      exit(1);
+    }
   }
   setup_ros(storage->configuration.rosMasterAddress, storage->configuration.rosMasterPort);
   dcMotor.attach(LEFT_MOTOR, LEFT_MOTOR_FWD, LEFT_MOTOR_BWD, LEFT_MOTOR_PWM);

@@ -10,25 +10,23 @@ NonVolatile *NonVolatile::getInstance() {
     return instance;
 }
 
-void NonVolatile::init(bool reset) {
-    if (reset) {
-        this->configuration.robotId = 0;
-        strcpy(this->configuration.robotDesc, "Robot0");
-        strcpy(this->configuration.rosMasterAddress, ROS_MASTER_IP);
-        this->configuration.rosMasterPort = 11411;
-        strcpy(this->configuration.wifiSSID, WIFI_SSID);
-        strcpy(this->configuration.wifiPass, WIFI_PASSWORD);
-        this->configuration.isAPMode = false;
-        this->save();
-        // this->configuration.robotId = -1;
-        // strcpy(this->configuration.robotDesc, "");
-        // strcpy(this->configuration.rosMasterAddress, "");
-        // this->configuration.rosMasterPort = 11411;
-        // strcpy(this->configuration.wifiSSID, "");
-        // strcpy(this->configuration.wifiPass, "");
-        // this->configuration.isAPMode = false;
-        // this->save();
-    }
+void NonVolatile::reset() {
+    this->configuration.robotId = 0;
+    strcpy(this->configuration.robotDesc, "Robot0");
+    strcpy(this->configuration.rosMasterAddress, ROS_MASTER_IP);
+    this->configuration.rosMasterPort = 11411;
+    strcpy(this->configuration.wifiSSID, WIFI_SSID);
+    strcpy(this->configuration.wifiPass, WIFI_PASSWORD);
+    this->configuration.isAPMode = false;
+    this->save();
+    // this->configuration.robotId = -1;
+    // strcpy(this->configuration.robotDesc, "");
+    // strcpy(this->configuration.rosMasterAddress, "");
+    // this->configuration.rosMasterPort = 11411;
+    // strcpy(this->configuration.wifiSSID, "");
+    // strcpy(this->configuration.wifiPass, "");
+    // this->configuration.isAPMode = false;
+    // this->save();
 }
 
 void NonVolatile::save() {

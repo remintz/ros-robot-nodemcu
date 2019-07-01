@@ -25,7 +25,7 @@ class NonVolatile {
         };
         NonVolatile() {};
         static NonVolatile* getInstance();
-        void init(bool reset);
+        void reset();
         ConfigData getConfigData();
         void save();
         ConfigData configuration;
