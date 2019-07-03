@@ -3,6 +3,9 @@
 
 #include "Arduino.h"
 
+#define FIRMWARE_VERSION    "0.0"
+#define HARDWARE_VERSION    "0.0"
+
 // Motor Pins
 #define LEFT_MOTOR_FWD D1
 #define LEFT_MOTOR_BWD D2
@@ -23,4 +26,9 @@
 #define WIFI_TRY_TIMEOUT    10000
 #define WIFI_SSID           "dramas_EXT"
 #define WIFI_PASSWORD       "seraquenada"
+
+#define WIFI_AP_PASSWORD    "S3cr3tP4ss"
+#define WIFI_SSID_PREFIX    "LSROBOT"
+
+#define WEB_CONFIG_PORT     80
 #endif

@@ -12,7 +12,9 @@ class NonVolatile {
         static NonVolatile* instance;
         long size = MEM_ALOC_SIZE;
         long initPos = MEM_INIT_POS;
+        
     public:
+        String CONFIG_VERSION = "0.0";
         struct ConfigData {
             int robotId;
             char robotDesc[20];

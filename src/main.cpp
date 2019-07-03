@@ -13,6 +13,7 @@
 #include "ros_controller.h"
 #include "dcmotor.h"
 #include "nonvolatile.h"
+#include "webconfig.h"
 
 ROSController rosControl = ROSController();
 DCMotor dcMotor = DCMotor();
@@ -30,6 +31,8 @@ int handleHelloPublisher;
 int handleSubscriber;
 
 int motorMode = 0;
+
+WebConfig *webConfig;
 
 void inputCallback(const std_msgs::String& msg) {
   Serial.println(msg.data);
@@ -49,6 +52,9 @@ void setup() {
   Serial.println("Starting");
   storage->getConfigData();
   Serial.println("Config data read");
+
+  webConfig = new WebConfig();
+  
   bool isWifiAPMode = storage->configuration.isAPMode;
   bool isFirstRun = storage->configuration.robotId == -1;
 
